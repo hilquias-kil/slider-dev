@@ -1,0 +1,19 @@
+.box {
+  width: 500px;
+  height: 500px;
+  background-color: #000;
+  overflow: hidden;
+  margin: 100px;
+  position: relative;
+}
+
+.wrapper {
+  width: 1000px;
+  height: 1000px;
+  background-color: blue;
+  position: relative;
+  background-image: url(http://placehold.it/100x100);
+
+  transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1);
+  transition-duration: 0ms;
+}
