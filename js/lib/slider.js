@@ -2,7 +2,7 @@ define("slider", function(){
 
   function Slider(element) {
 
-    this.el = element;
+  /*  this.el = element;
     this.active = false;
     this.contentEl = this.el.children[0];
 
@@ -13,7 +13,7 @@ define("slider", function(){
     this.contentHeight = this.el.scrollHeight;
 
     this.contentX = this.contentEl.offsetLeft;
-    this.contentY = this.contentEl.offsetTop;
+    this.contentY = this.contentEl.offsetTop;*/
   }
 
 
