@@ -3,4 +3,4 @@ requirejs.config({
     "slider": "lib/slider",
     "slider-drag": "lib/slider-drag"
   }
-})
+});

@@ -3,34 +3,31 @@ define("slider-drag", function(){
   function Drag(element) {
 
     this.el = element;
-    this.active = false,
-    this.contentEl = this.el.children[0],
+    this.active = false;
+    this.contentEl = this.el.children[0];
 
-    this.viewWidth = this.el.offsetWidth,
-    this.viewHeight = this.el.offsetHeight,
+    this.viewWidth = this.el.offsetWidth;
+    this.viewHeight = this.el.offsetHeight;
 
-    this.contentWidth = this.el.scrollWidth,
-    this.contentHeight = this.el.scrollHeight,
+    this.contentWidth = this.el.scrollWidth;
+    this.contentHeight = this.el.scrollHeight;
 
-    this.contentX = this.contentEl.offsetLeft,
-    this.contentY = this.contentEl.offsetTop,
+    this.contentX = this.contentEl.offsetLeft;
+    this.contentY = this.contentEl.offsetTop;
 
-    this.deltaX,
-    this.deltaY;
-
-    this.init()
+    this.init();
   }
 
   Drag.prototype.init = function(){
     this.addEvents();
-  }
+  };
 
   Drag.prototype.addEvents = function(){
 
     this.el.addEventListener("mousedown",this);
     this.el.addEventListener("mousemove",this);
     this.el.addEventListener("mouseup",this);
-  }
+  };
 
   // Method special handleEvent
 
@@ -47,7 +44,7 @@ define("slider-drag", function(){
         this.end();
         break;
     }
-  }
+  };
 
   Drag.prototype.start = function(event){
 
@@ -55,7 +52,7 @@ define("slider-drag", function(){
 
     this.deltaX = event.clientX - this.contentX;
     this.deltaY = event.clientY - this.contentY;
-  }
+  };
 
   Drag.prototype.move = function(event){
     if(this.active){
@@ -67,11 +64,11 @@ define("slider-drag", function(){
 
       this.contentEl.style.transform = "translate3d("+ this.contentX +"px, "+ this.contentY +"px, 0)";
     }
-  }
+  };
 
   Drag.prototype.end = function(){
     this.active = false;
-  }
+  };
 
   return Drag;
 });
