@@ -2,18 +2,41 @@
   width: 500px;
   height: 500px;
   background-color: #000;
-  overflow: hidden;
+  outline: 1px solid #000;
   margin: 100px;
   position: relative;
 }
 
 .wrapper {
-  width: 1000px;
-  height: 1000px;
-  background-color: blue;
+  background-color: #bbb;
   position: relative;
-  background-image: url(http://placehold.it/100x100);
 
   transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1);
-  transition-duration: 0ms;
+  -webkit-transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1);
+  transition-duration: 300ms;
+  -webkit-transition-duration: 300ms;
+  font-size: 0;
+  white-space: nowrap;
+}
+
+.wrapper div {
+    background-color: #ccc;
+    height: 500px;
+    box-shadow: 0 0 0 1px red inset;
+    display: inline-block;
+    font-size: 1rem;
+    white-space: normal;
+}
+
+.item-1 {
+    width: 400px;
+}
+.item-2 {
+    width: 500px;
+}
+.item-3 {
+    width: 600px;
+}
+.item-4 {
+    width: 700px;
 }
