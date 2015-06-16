@@ -14,7 +14,7 @@
 	function Slider (element) {
 		// el = wrapper
 		if ( typeof element == 'string' ) {
-			this.el = document.querySelector(element);
+			this.el = document.querySelector( element );
 		} else {
 			this.el = element;
 		}
@@ -31,29 +31,15 @@
 		this.contentX = this.holder.offsetLeft;
 		this.contentY = this.holder.offsetTop;
 
-		this.active = false;
 		this.current = 0;
-		this.positionX = 0;
 
 		this.init();
 	}
 
 	Slider.prototype = {
-		init: function () {
-			this.prepare();
-		},
-
-		prepare: function () {
-			this.sizes = [];
-			this.slideSizes = [];
-			for (var i = 0; i < this.slidesQtd; i++) {
-				this.sizes.push(this.slides[i].offsetWidth);
-				this.slideSizes.push(this.slides[i].offsetLeft);
-			}
-		},
 
 		next: function () {
-			if( this.current < (this.slidesQtd - 1) ) {
+			if( this.current < ( this.slidesQtd - 1 )) {
 				this.current++;
 				this.goToSlide();
 			}
@@ -67,14 +53,7 @@
 		},
 
 		goToSlide: function () {
-			this.holder.style.transform = "translateX(-"+ this.slideSizes[this.current] +"px) translateY(0px) translateZ(0px)";
-		},
-
-		getSlideSize: function () {
-			//this.positionX =
-			/*for (var i = 0; i < this.current; i++) {
-
-			}*/
+			//this.holder.style.transform = "translateX(" + this.positions.center[ this.current ] +"px) translateY(0px) translateZ(0px)";
 		}
 	}
 
