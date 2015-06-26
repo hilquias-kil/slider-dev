@@ -16,6 +16,13 @@
 		return proxy;
 	}
 
+	Utils.prototype.extend = function (o, p) {
+		for(var prop in p) {
+			o[prop] = p[prop];
+		}
+		return o;
+	}
+
 	window.utils = new Utils();
 
 }( window ));

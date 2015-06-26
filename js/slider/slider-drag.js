@@ -23,3 +23,12 @@ end: function(e) {
     this.active = false;
     console.log("end");
 }
+
+
+is_touch_device = ('ontouchstart' in window),
+
+// events
+events.start = is_touch_device ? 'touchstart' : 'mousedown';
+events.move = is_touch_device ? 'touchmove' : 'mousemove';
+events.end = is_touch_device ? 'touchend' : 'mouseup';
+events.resize = is_touch_device ? 'orientationchange' : 'resize';

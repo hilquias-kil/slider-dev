@@ -1,6 +1,6 @@
 .box {
-  width: 500px;
-  height: 500px;
+  width: 200px;
+  height: 200px;
   background-color: #000;
   outline: 1px solid #000;
   margin: 100px;
@@ -21,7 +21,7 @@
 
 .wrapper div {
     background-color: #ccc;
-    height: 500px;
+    height: 200px;
     box-shadow: 0 0 0 1px red inset;
     display: inline-block;
     font-size: 1rem;
@@ -29,14 +29,30 @@
 }
 
 .item-1 {
-    width: 400px;
+    width: 120px;
 }
 .item-2 {
-    width: 500px;
+    width: 100px;
 }
 .item-3 {
-    width: 600px;
+    width: 140px;
 }
 .item-4 {
-    width: 700px;
+    width: 220px;
 }
+
+.box.box-2 .wrapper {
+    white-space: normal;
+}
+
+.box.box-2 .item-1,
+.box.box-2 .item-2,
+.box.box-2 .item-3,
+.box.box-2 .item-4 {
+    width: 100%;
+}
+
+.box.box-2 .item-1 { height: 120px; }
+.box.box-2 .item-2 { height: 100px; }
+.box.box-2 .item-3 { height: 140px; }
+.box.box-2 .item-4 { height: 220px; }

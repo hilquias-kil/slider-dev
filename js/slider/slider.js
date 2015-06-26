@@ -1,36 +1,46 @@
-( function( window, document ) {
+(function(window, document) {
 	'use strict';
 
 	var utils = window.utils,
-		events = {},
-		is_touch_device = ('ontouchstart' in window),
 		optionsDefault;
 
-	// events
-	events.start = is_touch_device ? 'touchstart' : 'mousedown';
-	events.move = is_touch_device ? 'touchmove' : 'mousemove';
-	events.end = is_touch_device ? 'touchend' : 'mouseup';
-	events.resize = is_touch_device ? 'orientationchange' : 'resize';
+	optionsDefault = {
+		alignment : "start",
+		initialSlide : 0,
+		orientation: "horizontal"
+	}
 
-	function Slider (element, options) {
-		// el = wrapper
-		if ( typeof element == 'string' ) {
-			this.el = document.querySelector( element );
-		} else {
-			this.el = element;
-		}
-		this.options = options;
+	function Slider(element, config) {
+
+		var options;
+
+		this.validateElement(element);
+
+		options = config || {};
+		this.options = utils.extend(optionsDefault, options);
+
+		this.defineProperties();
+		this.defineMutableProperties();
+		this.setUp();
 		this.init();
 	}
 
-	optionsDefault  = {
-
+	Slider.prototype.validateElement = function (el) {
+		if (typeof el === "string") {
+			document.querySelectorAll(el);
+		}
 	}
 
-
-
-	Slider.prototype.init = function () {
+	Slider.prototype.defineProperties = function() {
 		this.holder = this.el.children[0];
+
+		this.contentX = this.holder.offsetLeft;
+		this.contentY = this.holder.offsetTop;
+
+		this.setCurrent();
+	}
+
+	Slider.prototype.defineMutableProperties = function() {
 		this.slides = this.holder.children;
 		this.slidesQtd = this.slides.length;
 
@@ -39,62 +49,79 @@
 
 		this.contentWidth = this.holder.scrollWidth;
 		this.contentHeight = this.holder.scrollHeight;
-
-		this.contentX = this.holder.offsetLeft;
-		this.contentY = this.holder.offsetTop;
-
-		this.current = 0;
-
-		this.setUp();
 	}
 
-	Slider.prototype.setUp = function () {
+	Slider.prototype.setCurrent = function(num) {
+		var num = num || this.options.initialSlide;
+		this.current = num;
+	}
+
+	Slider.prototype.setUp = function() {
+
+		var sum, size, vWidth, initValue;
+
 		this.dimensions = {
-			sliderSize : [],
-			sliderSum : []
+			sliderSize: [],
+			sliderSum: []
 		}
-		var initValue = 0;
+		this.positions = {
+			start: [],
+			center: [],
+			end: []
+		}
+
+		initValue = 0;
+
 		for (var i = 0; i < this.slidesQtd; i++) {
 			this.dimensions.sliderSize.push(this.slides[i].offsetWidth);
 			initValue += this.slides[i].offsetWidth;
 			this.dimensions.sliderSum.push(initValue);
 		}
 
-		this.positions = {
-			start : [],
-			center : [],
-			end : []
-		}
+		sum = this.dimensions.sliderSum,
+			size = this.dimensions.sliderSize,
+			vWidth = this.viewWidth;
+
 		for (var i = 0; i < this.slidesQtd; i++) {
-			this.positions.start.push( this.dimensions.sliderSum[i] - this.dimensions.sliderSize[i] );
-			var a = (this.viewWidth - this.dimensions.sliderSize[i]) / 2;
-			console.log(a);
-			this.positions.center.push( (this.dimensions.sliderSum[i] - this.viewWidth) + a );
-			this.positions.end.push(this.dimensions.sliderSum[i] - this.viewWidth);
+			this.positions.start.push(sum[i] - size[i]);
+			this.positions.center.push((sum[i] - vWidth) + ((vWidth - size[i]) / 2));
+			this.positions.end.push(sum[i] - vWidth);
 		}
-		console.log(this.positions);
 	}
 
-	Slider.prototype.next = function () {
-		if( this.current < ( this.slidesQtd - 1 )) {
+	Slider.prototype.init = function() {
+		this.goToSlide();
+	}
+
+	Slider.prototype.next = function() {
+		if (this.current < (this.slidesQtd - 1)) {
 			this.current++;
 			this.goToSlide();
 		}
 	}
 
-	Slider.prototype.prev = function () {
-		if( this.current > 0 ) {
+	Slider.prototype.prev = function() {
+		if (this.current > 0) {
 			this.current--;
 			this.goToSlide();
 		}
 	}
 
-	Slider.prototype.goToSlide = function () {
-		var pos =  -this.positions.start[ this.current ];
-		this.holder.style.transform = "translateX(" + pos +"px) translateY(0px) translateZ(0px)";
+	Slider.prototype.goToSlide = function() {
+		var pos = -this.positions.end[this.current];
+		this.holder.style.transform = "translateX(" + pos + "px) translateY(0px) translateZ(0px)";
 	}
 
+	Slider.prototype.update = function() {
+		this.defineMutableProperties();
+		this.setUp();
+	}
+
+	Slider.prototype.reset = function() {
+		this.update();
+		this.setCurrent();
+	}
 
 	window.Slider = Slider;
 
-}( window, document ));
+}(window, document));
