@@ -1,41 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-  <link rel="stylesheet" href="css/main.css" />
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+	<link rel="stylesheet" href="css/main.css" />
 </head>
+
 <body>
 
-  <div class="box">
-    <div class="wrapper">
-        <div class="item-1"></div>
-        <div class="item-2"></div>
-        <div class="item-3"></div>
-        <div class="item-4"></div>
-    </div>
-  </div>
+	<div class="box">
+		<div class="wrapper">
+			<div class="item-1"></div>
+			<div class="item-2"></div>
+			<div class="item-3"></div>
+			<div class="item-4"></div>
+		</div>
+	</div>
 
-  <div class="box box-2">
-    <div class="wrapper">
-        <div class="item-1"></div>
-        <div class="item-2"></div>
-        <div class="item-3"></div>
-        <div class="item-4"></div>
-    </div>
-  </div>
+	<div class="box box-2">
+		<div class="wrapper">
+			<div class="item-1"></div>
+			<div class="item-2"></div>
+			<div class="item-3"></div>
+			<div class="item-4"></div>
+		</div>
+	</div>
 
-  <!--<script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script>-->
-  <script type="text/javascript" src="js/utils.js"></script>
-  <script type="text/javascript" src="js/slider/slider.js"></script>
-  <script type="text/javascript">
-    (function(){
-        window.slider = new Slider(".box", {
-            alignment: "end",
-            teste: "teste"
-        });
-    }())
-  </script>
+	<script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- <script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script> -->
+	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/slider/slider.js"></script>
+	<script type="text/javascript">
+		(function(){
+
+			$(".box").each(function(e){
+				var options = {
+					alignment: "end",
+					teste: "teste"
+				};
+				if($(this).hasClass("box-2")) {
+					options.orientation = "vertical";
+				}
+				window["slider" + e] = new Slider(this, options);
+			})
+		}())
+	</script>
 </body>
+
 </html>

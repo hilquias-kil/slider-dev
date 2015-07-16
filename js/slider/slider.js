@@ -2,45 +2,57 @@
 	'use strict';
 
 	var utils = window.utils,
-		optionsDefault;
+		optionsDefault,
+		proto,
+		is_touch_device,
+		events;
 
-	optionsDefault = {
-		alignment : "start",
-		initialSlide : 0,
-		orientation: "horizontal"
+	function optionsDefault() {
+		this.alignment = "start";
+		this.initialSlide = 0;
+		this.orientation = "horizontal";
 	}
 
 	function Slider(element, config) {
-
 		var options;
 
-		this.validateElement(element);
+		this.el = this.validateElement(element);
 
 		options = config || {};
-		this.options = utils.extend(optionsDefault, options);
+		this.options = utils.extend(new optionsDefault(), options);
 
 		this.defineProperties();
 		this.defineMutableProperties();
 		this.setUp();
 		this.init();
+
+		// drag
+		this.bind();
 	}
 
-	Slider.prototype.validateElement = function (el) {
+	proto = Slider.prototype;
+
+	proto.validateElement = function (el) {
 		if (typeof el === "string") {
-			document.querySelectorAll(el);
+			return document.querySelector(el);
+		} else if(el.length) {
+			return el[0];
 		}
+		return el;
 	}
 
-	Slider.prototype.defineProperties = function() {
+	proto.defineProperties = function() {
 		this.holder = this.el.children[0];
 
 		this.contentX = this.holder.offsetLeft;
 		this.contentY = this.holder.offsetTop;
 
+		this.active = false;
+
 		this.setCurrent();
 	}
 
-	Slider.prototype.defineMutableProperties = function() {
+	proto.defineMutableProperties = function() {
 		this.slides = this.holder.children;
 		this.slidesQtd = this.slides.length;
 
@@ -51,14 +63,15 @@
 		this.contentHeight = this.holder.scrollHeight;
 	}
 
-	Slider.prototype.setCurrent = function(num) {
+	proto.setCurrent = function(num) {
 		var num = num || this.options.initialSlide;
 		this.current = num;
 	}
 
-	Slider.prototype.setUp = function() {
+	proto.setUp = function() {
 
-		var sum, size, vWidth, initValue;
+		var sum, size, vMeasure, initValue,
+			direction;
 
 		this.dimensions = {
 			sliderSize: [],
@@ -70,56 +83,122 @@
 			end: []
 		}
 
+		direction = "offsetWidth";
+
+		if(this.options.orientation == "vertical"){
+			direction = "offsetHeight";
+		}
+
 		initValue = 0;
 
 		for (var i = 0; i < this.slidesQtd; i++) {
-			this.dimensions.sliderSize.push(this.slides[i].offsetWidth);
-			initValue += this.slides[i].offsetWidth;
+			this.dimensions.sliderSize.push(this.slides[i][direction]);
+			initValue += this.slides[i][direction];
 			this.dimensions.sliderSum.push(initValue);
 		}
 
 		sum = this.dimensions.sliderSum,
-			size = this.dimensions.sliderSize,
-			vWidth = this.viewWidth;
+		size = this.dimensions.sliderSize,
+		vMeasure = this.el[direction];
 
 		for (var i = 0; i < this.slidesQtd; i++) {
 			this.positions.start.push(sum[i] - size[i]);
-			this.positions.center.push((sum[i] - vWidth) + ((vWidth - size[i]) / 2));
-			this.positions.end.push(sum[i] - vWidth);
+			this.positions.center.push((sum[i] - vMeasure) + ((vMeasure - size[i]) / 2));
+			this.positions.end.push(sum[i] - vMeasure);
 		}
 	}
 
-	Slider.prototype.init = function() {
+	proto.init = function() {
 		this.goToSlide();
 	}
 
-	Slider.prototype.next = function() {
+	proto.next = function() {
 		if (this.current < (this.slidesQtd - 1)) {
 			this.current++;
 			this.goToSlide();
 		}
 	}
 
-	Slider.prototype.prev = function() {
+	proto.prev = function() {
 		if (this.current > 0) {
 			this.current--;
 			this.goToSlide();
 		}
 	}
 
-	Slider.prototype.goToSlide = function() {
+	proto.goToSlide = function() {
 		var pos = -this.positions.end[this.current];
-		this.holder.style.transform = "translateX(" + pos + "px) translateY(0px) translateZ(0px)";
+		if(this.options.orientation == "vertical"){
+			this.moveElement(0, pos);
+		} else {
+			this.moveElement(pos);
+		}
+
+		////////
+		this.contentX = pos;
 	}
 
-	Slider.prototype.update = function() {
+	proto.update = function() {
 		this.defineMutableProperties();
 		this.setUp();
 	}
 
-	Slider.prototype.reset = function() {
+	proto.reset = function() {
 		this.update();
 		this.setCurrent();
+	}
+
+	proto.moveElement = function(x, y) {
+		var	axis = "translateX(" + (x || 0) + "px)";
+		axis += " translateY(" + (y || 0) + "px)";
+		axis += " translateZ(0px)";
+
+		this.holder.style.transform = axis;
+	}
+
+///////////////////////////////// Drag
+
+	is_touch_device = ('ontouchstart' in window),
+
+	events = {
+		start : is_touch_device ? 'touchstart' : 'mousedown',
+		move : is_touch_device ? 'touchmove' : 'mousemove',
+		end : is_touch_device ? 'touchend' : 'mouseup',
+		resize : is_touch_device ? 'orientationchange' : 'resize',
+	}
+
+	proto.bind = function() {
+		this.el.addEventListener(events.start, utils.proxy(this.start, this));
+		this.el.addEventListener(events.move, utils.proxy(this.move, this));
+		this.el.addEventListener(events.end, utils.proxy(this.end, this));
+	}
+
+	proto.start = function(e) {
+		this.active = true;
+		console.log(this.options);
+
+		this.deltaX = e.clientX - this.contentX;
+		this.deltaY = e.clientY - this.contentY;
+
+		this.holder.style.transitionDuration = "0ms";
+	}
+
+	proto.move = function(e) {
+		if (this.active) {
+			this.contentX = e.clientX - this.deltaX;
+			this.contentY = e.clientY - this.deltaY;
+
+			if(this.options.orientation == "vertical"){
+				this.moveElement(0, this.contentY);
+			} else {
+				this.moveElement(this.contentX);
+			}
+		}
+	}
+
+	proto.end = function(e) {
+		this.active = false;
+		this.holder.style.transitionDuration = "300ms";
 	}
 
 	window.Slider = Slider;

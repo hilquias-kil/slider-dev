@@ -3,8 +3,7 @@
 
 	var slice = Array.prototype.slice;
 
-	function Utils (){
-	}
+	function Utils (){}
 
 	Utils.prototype.proxy = function (fn, context) {
 		var proxy, args;
