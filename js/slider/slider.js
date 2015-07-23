@@ -28,6 +28,9 @@
 
 		// drag
 		this.bind();
+
+		// snap
+		this.initSnap();
 	}
 
 	proto = Slider.prototype;
@@ -127,15 +130,12 @@
 	}
 
 	proto.goToSlide = function() {
-		var pos = -this.positions.end[this.current];
+		var pos = -this.positions[this.options.alignment][this.current];
 		if(this.options.orientation == "vertical"){
-			this.moveElement(0, pos);
+			this.dislocateElement(0, pos);
 		} else {
-			this.moveElement(pos);
+			this.dislocateElement(pos);
 		}
-
-		////////
-		this.contentX = pos;
 	}
 
 	proto.update = function() {
@@ -148,12 +148,17 @@
 		this.setCurrent();
 	}
 
-	proto.moveElement = function(x, y) {
+	proto.dislocateElement = function(x, y) {
 		var	axis = "translateX(" + (x || 0) + "px)";
 		axis += " translateY(" + (y || 0) + "px)";
 		axis += " translateZ(0px)";
 
 		this.holder.style.transform = axis;
+		this.contentX = x;
+		this.contentY = y;
+
+		// teste
+		this.el.setAttribute("data-pos", x);
 	}
 
 ///////////////////////////////// Drag
@@ -171,16 +176,19 @@
 		this.el.addEventListener(events.start, utils.proxy(this.start, this));
 		this.el.addEventListener(events.move, utils.proxy(this.move, this));
 		this.el.addEventListener(events.end, utils.proxy(this.end, this));
+
+		this.swipeTime = new GetTimeSwipe();
 	}
 
 	proto.start = function(e) {
 		this.active = true;
-		console.log(this.options);
 
 		this.deltaX = e.clientX - this.contentX;
 		this.deltaY = e.clientY - this.contentY;
 
 		this.holder.style.transitionDuration = "0ms";
+
+		this.swipeTime.setTimeStart();
 	}
 
 	proto.move = function(e) {
@@ -189,9 +197,9 @@
 			this.contentY = e.clientY - this.deltaY;
 
 			if(this.options.orientation == "vertical"){
-				this.moveElement(0, this.contentY);
+				this.dislocateElement(0, this.contentY);
 			} else {
-				this.moveElement(this.contentX);
+				this.dislocateElement(this.contentX);
 			}
 		}
 	}
@@ -199,6 +207,79 @@
 	proto.end = function(e) {
 		this.active = false;
 		this.holder.style.transitionDuration = "300ms";
+
+
+		this.swipeTime.setTimeEnd();
+		this.checkSwipe();
+	}
+
+	proto.checkSwipe = function() {
+		if (this.swipeTime.getSwipeTime() > 300) {
+			this.snap();
+		} else {
+			this.snap(true);
+		}
+	}
+
+	////////////// snap
+
+	proto.initSnap = function() {
+		var positions = this.positions;
+		var dimensions = this.dimensions.sliderSize.map(function(v){ return (v/2) });
+		var axis = {
+			start: [],
+			center: [],
+			end: []
+		};
+
+		// start
+		axis.start = positions.start.map(function(v, i){ return -(v + dimensions[i]) })
+		axis.start.unshift(Infinity);
+		axis.start[axis.start.length - 1] = -Infinity;
+
+		// center
+		axis.center = positions.center.map(function(v, i){ return -(v + dimensions[i]) });
+		axis.center.unshift(Infinity);
+		axis.center[axis.start.length - 1] = -Infinity;
+
+		// end
+		axis.end = positions.end.map(function(v, i){ return (-v) + dimensions[i] })
+		axis.end[0] = Infinity;
+		axis.end.push(-Infinity);
+
+		this.snapAxis = axis;
+	}
+
+	proto.snap = function() {
+		var qtd = this.slidesQtd;
+		var contentAxis = this.options.orientation == "vertical" ? this.contentY : this.contentX;
+		var axis = this.snapAxis[this.options.alignment];
+
+		for (var i = 0; i < qtd; i++) {
+
+			if(contentAxis < axis[i] && contentAxis > axis[i+1]){
+				this.current = i;
+				this.goToSlide();
+			}
+
+		}
+	}
+
+	// Objects
+
+	function GetTimeSwipe(){
+		var timeStart = 0,
+			timeEnd = 0;
+
+		this.setTimeStart = function () {
+			timeStart = Date.now();
+		}
+		this.setTimeEnd = function () {
+			timeEnd = Date.now();
+		}
+		this.getSwipeTime = function () {
+			return timeEnd - timeStart;
+		}
 	}
 
 	window.Slider = Slider;

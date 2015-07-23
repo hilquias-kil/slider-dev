@@ -2,7 +2,7 @@
   width: 200px;
   height: 200px;
   background-color: #000;
-  outline: 1px solid #000;
+  outline: 6px solid green;
   margin: 100px;
   position: relative;
 }
@@ -19,6 +19,19 @@
   white-space: nowrap;
 }
 
+.box:before {
+    content: attr(data-pos);
+    position: absolute;
+    left: 50%;
+    top: -30px;
+    padding: 5px;
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid #bbb;
+    font-size: 12px;
+    line-height: 100%;
+}
+
 .wrapper div {
     background-color: #ccc;
     height: 200px;
@@ -26,6 +39,20 @@
     display: inline-block;
     font-size: 1rem;
     white-space: normal;
+    position: relative;
+}
+
+.wrapper div:before {
+    content: attr(data-pos);
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 5px;
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid red;
+    font-size: 12px;
+    line-height: 100%;
 }
 
 .item-1 {
