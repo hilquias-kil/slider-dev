@@ -2,12 +2,11 @@
 	'use strict';
 
 	var utils = window.utils,
-		optionsDefault,
 		proto,
 		is_touch_device,
 		events;
 
-	function optionsDefault() {
+	function OptionsDefault() {
 		this.alignment = "start";
 		this.initialSlide = 0;
 		this.orientation = "horizontal";
@@ -19,7 +18,7 @@
 		this.el = this.validateElement(element);
 
 		options = config || {};
-		this.options = utils.extend(new optionsDefault(), options);
+		this.options = utils.extend(new OptionsDefault(), options);
 
 		this.defineProperties();
 		this.defineMutableProperties();
@@ -46,10 +45,6 @@
 
 	proto.defineProperties = function() {
 		this.holder = this.el.children[0];
-
-		this.contentX = this.holder.offsetLeft;
-		this.contentY = this.holder.offsetTop;
-
 		this.active = false;
 
 		this.setCurrent();
@@ -86,10 +81,10 @@
 			end: []
 		}
 
-		direction = "offsetWidth";
-
 		if(this.options.orientation == "vertical"){
 			direction = "offsetHeight";
+		} else {
+			direction = "offsetWidth";
 		}
 
 		initValue = 0;
@@ -118,24 +113,20 @@
 	proto.next = function() {
 		if (this.current < (this.slidesQtd - 1)) {
 			this.current++;
-			this.goToSlide();
 		}
+		this.goToSlide();
 	}
 
 	proto.prev = function() {
 		if (this.current > 0) {
 			this.current--;
-			this.goToSlide();
 		}
+		this.goToSlide();
 	}
 
 	proto.goToSlide = function() {
 		var pos = -this.positions[this.options.alignment][this.current];
-		if(this.options.orientation == "vertical"){
-			this.dislocateElement(0, pos);
-		} else {
-			this.dislocateElement(pos);
-		}
+		this.dislocateElement(pos, pos);
 	}
 
 	proto.update = function() {
@@ -149,16 +140,34 @@
 	}
 
 	proto.dislocateElement = function(x, y) {
-		var	axis = "translateX(" + (x || 0) + "px)";
-		axis += " translateY(" + (y || 0) + "px)";
-		axis += " translateZ(0px)";
+		var	axis = {
+			x: x || 0,
+			y: y || 0
+		}
 
-		this.holder.style.transform = axis;
-		this.contentX = x;
-		this.contentY = y;
+		var pos = this.positions[this.options.alignment];
+		var first = -pos[0];
+		var last = -pos[pos.length - 1];
+
+		if (this.options.orientation == "vertical") {
+			if(axis.y > first || axis.y < last) {
+				console.log('limit')
+			} else {
+				utils.cssTransform(this.holder, 0, axis.y);
+			}
+		} else {
+			if(axis.x > first || axis.x < last) {
+				console.log('limit')
+			} else {
+				utils.cssTransform(this.holder, axis.x, 0);
+			}
+		}
+
+		this.contentX = axis.x;
+		this.contentY = axis.y;
 
 		// teste
-		this.el.setAttribute("data-pos", x);
+		this.el.setAttribute("data-pos", x || 0);
 	}
 
 ///////////////////////////////// Drag
@@ -177,30 +186,33 @@
 		this.el.addEventListener(events.move, utils.proxy(this.move, this));
 		this.el.addEventListener(events.end, utils.proxy(this.end, this));
 
-		this.swipeTime = new GetTimeSwipe();
+		this.swipeData = new GetSwipeData();
 	}
 
 	proto.start = function(e) {
 		this.active = true;
 
-		this.deltaX = e.clientX - this.contentX;
-		this.deltaY = e.clientY - this.contentY;
+		this.deltaX = utils.clientAxis(e).x - this.contentX;
+		this.deltaY = utils.clientAxis(e).y - this.contentY;
 
 		this.holder.style.transitionDuration = "0ms";
 
-		this.swipeTime.setTimeStart();
+		this.swipeData.setTimeStart();
+
+		if (this.options.orientation == "vertical") {
+			this.swipeData.startPosition = this.contentY;
+		} else {
+			this.swipeData.startPosition = this.contentX;
+		}
 	}
 
 	proto.move = function(e) {
 		if (this.active) {
-			this.contentX = e.clientX - this.deltaX;
-			this.contentY = e.clientY - this.deltaY;
 
-			if(this.options.orientation == "vertical"){
-				this.dislocateElement(0, this.contentY);
-			} else {
-				this.dislocateElement(this.contentX);
-			}
+			this.contentX = utils.clientAxis(e).x - this.deltaX;
+			this.contentY = utils.clientAxis(e).y - this.deltaY;
+
+			this.dislocateElement(this.contentX, this.contentY);
 		}
 	}
 
@@ -209,15 +221,27 @@
 		this.holder.style.transitionDuration = "300ms";
 
 
-		this.swipeTime.setTimeEnd();
+		this.swipeData.setTimeEnd();
+		if (this.options.orientation == "vertical") {
+			this.swipeData.endPosition = this.contentY;
+		} else {
+			this.swipeData.endPosition = this.contentX;
+		}
 		this.checkSwipe();
 	}
 
 	proto.checkSwipe = function() {
-		if (this.swipeTime.getSwipeTime() > 300) {
+		if (this.swipeData.getSwipeTime() > 300) {
 			this.snap();
 		} else {
-			this.snap(true);
+
+			if(this.swipeData.getSwipeDirection() == "next"){
+				this.next();
+			} else if(this.swipeData.getSwipeDirection() == "prev") {
+				this.prev();
+			} else {
+				//this.goToSlide();
+			}
 		}
 	}
 
@@ -261,15 +285,17 @@
 				this.current = i;
 				this.goToSlide();
 			}
-
 		}
 	}
 
 	// Objects
 
-	function GetTimeSwipe(){
+	function GetSwipeData(){
 		var timeStart = 0,
 			timeEnd = 0;
+
+		this.startPosition = 0;
+		this.endPosition = 0;
 
 		this.setTimeStart = function () {
 			timeStart = Date.now();
@@ -279,6 +305,15 @@
 		}
 		this.getSwipeTime = function () {
 			return timeEnd - timeStart;
+		}
+		this.getSwipeDirection = function () {
+			if(this.startPosition > this.endPosition){
+				return "next";
+			} else if(this.startPosition < this.endPosition) {
+				return "prev";
+			} else {
+				return false;
+			}
 		}
 	}
 

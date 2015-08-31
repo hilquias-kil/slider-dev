@@ -5,6 +5,7 @@
   outline: 6px solid green;
   margin: 100px;
   position: relative;
+  overflow: hidden;
 }
 
 .wrapper {
@@ -83,3 +84,17 @@
 .box.box-2 .item-2 { height: 100px; }
 .box.box-2 .item-3 { height: 140px; }
 .box.box-2 .item-4 { height: 220px; }
+
+
+.box.box-3 {
+    width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+
+.box.box-3 .item-1,
+.box.box-3 .item-2,
+.box.box-3 .item-3,
+.box.box-3 .item-4 {
+    width: 100%;
+}

@@ -22,6 +22,36 @@
 		return o;
 	}
 
+	Utils.prototype.cssTransform = function (el, x, y) {
+		var translate;
+
+		if (!this.transformProperty) {
+			if ('transform' in el.style) {
+				this.transformProperty = 'transform';
+			} else if ('webkitTransform' in el.style) {
+				this.transformProperty = 'webkitTransform';
+			} else if ('MozTransform' in el.style) {
+				this.transformProperty = 'MozTransform';
+			} else if ('msTransform' in el.style) {
+				this.transformProperty = 'msTransform';
+			}
+		}
+
+		translate = "translateX(" + x + "px)";
+		translate += "translateY(" + y + "px)";
+		translate += "translateZ(0px)";
+
+		el.style[this.transformProperty] = translate;
+	}
+
+	Utils.prototype.clientAxis = function (event) {
+		var axis = {
+			x: event.clientX || event.touches[0].pageX,
+			y: event.clientY || event.touches[0].pageY
+		};
+		return axis;
+	}
+
 	window.utils = new Utils();
 
 }( window ));
