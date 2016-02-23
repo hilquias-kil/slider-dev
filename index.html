@@ -37,6 +37,15 @@
 		</div>
 	</div>
 
+	<div class="slide">
+		<ul>
+			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-1.jpg" width="640" height="480" alt=""></li>
+			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-2.jpg" width="640" height="480" alt=""></li>
+			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-3.jpg" width="640" height="480" alt=""></li>
+			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-4.jpg" width="640" height="480" alt=""></li>
+		</ul>
+	</div>
+
 	<script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<!-- <script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script> -->
 	<script type="text/javascript" src="js/utils.js"></script>
@@ -54,6 +63,9 @@
 				}
 				window["slider" + e] = new Slider(this, options);
 			})
+
+			var slide = document.querySelector(".slide");
+			window.slide = new Slider(slide);
 		}())
 	</script>
 </body>

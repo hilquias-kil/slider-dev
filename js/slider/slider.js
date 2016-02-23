@@ -145,23 +145,31 @@
 			y: y || 0
 		}
 
-		var pos = this.positions[this.options.alignment];
-		var first = -pos[0];
-		var last = -pos[pos.length - 1];
+
+		var start = this.positions.start[0];
+		var end = this.positions.end[this.positions.end.length - 1];
+			end = -end;
+
+		var orientation = this.options.orientation == "vertical" ? axis.y : axis.x;
+		var num = orientation;
+
+		if(orientation > start){
+			num = (orientation / 3);
+		} else if(orientation < end){
+			num = ((orientation - end) /3) + end;
+		} else {
+			num = orientation;
+		}
 
 		if (this.options.orientation == "vertical") {
-			if(axis.y > first || axis.y < last) {
-				console.log('limit')
-			} else {
-				utils.cssTransform(this.holder, 0, axis.y);
-			}
+			utils.cssTransform(this.holder, 0, num);
 		} else {
-			if(axis.x > first || axis.x < last) {
-				console.log('limit')
-			} else {
-				utils.cssTransform(this.holder, axis.x, 0);
-			}
+			utils.cssTransform(this.holder, num, 0);
 		}
+
+
+
+		//console.log(x, x/3);
 
 		this.contentX = axis.x;
 		this.contentY = axis.y;
@@ -204,6 +212,7 @@
 		} else {
 			this.swipeData.startPosition = this.contentX;
 		}
+		//console.log("%cstart: " + this.contentX, "color:orange;")
 	}
 
 	proto.move = function(e) {
@@ -211,6 +220,8 @@
 
 			this.contentX = utils.clientAxis(e).x - this.deltaX;
 			this.contentY = utils.clientAxis(e).y - this.deltaY;
+
+			//console.log("move: " + this.contentX)
 
 			this.dislocateElement(this.contentX, this.contentY);
 		}
@@ -227,6 +238,7 @@
 		} else {
 			this.swipeData.endPosition = this.contentX;
 		}
+		//console.log("%cend: " + this.contentX, "color:red;")
 		this.checkSwipe();
 	}
 

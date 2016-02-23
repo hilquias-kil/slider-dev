@@ -98,3 +98,28 @@
 .box.box-3 .item-4 {
     width: 100%;
 }
+
+.slide {
+	width: 640px;
+	height: 480px;
+	overflow: hidden;
+	margin: 100px;
+	border: 1px solid #ccc;
+}
+
+.slide ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0;
+	white-space: nowrap;
+	position: relative;
+	transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1);
+    -webkit-transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1);
+    transition-duration: 300ms;
+    -webkit-transition-duration: 300ms;
+}
+
+.slide ul li {
+	display: inline-block;
+}
