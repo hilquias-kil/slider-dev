@@ -1,1 +1,3 @@
 # slider-dev
+
+Experimental project.
