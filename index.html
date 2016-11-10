@@ -1,73 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-	<link rel="stylesheet" href="css/main.css" />
+	<link rel="stylesheet" href="page-assets/css/main.css" />
 </head>
-
 <body>
 
-	<div class="box">
-		<div class="wrapper">
-			<div class="item-1"></div>
-			<div class="item-2"></div>
-			<div class="item-3"></div>
-			<div class="item-4"></div>
-		</div>
-	</div>
+	<div class="container">
+		<header class="header">
+			<div class="wrapper">
+				<h1 class="title">Slide dev</h1>
+				<p class="descripition">
+					descripition...
+				</p>
+			</div>
+		</header>
+		<div class="content">
+			<div class="main-banner">
+				<ul>
+					<li class="banner-01">banner 1</li>
+					<li class="banner-02">banner 1</li>
+					<li class="banner-03">banner 1</li>
+					<li class="banner-04">banner 1</li>
+				</ul>
+			</div>
+			<div class="wrapper">
+				<section class="download">
+					<h2 class="title">Download</h2>
+					<ul>
+						<li><a href="#">slider.js</a></li>
+						<li><a href="#">slider.min.js</a></li>
+						<li><a href="#">github</a></li>
+					</ul>
+				</section>
 
-	<div class="box box-2">
-		<div class="wrapper">
-			<div class="item-1"></div>
-			<div class="item-2"></div>
-			<div class="item-3"></div>
-			<div class="item-4"></div>
-		</div>
-	</div>
+				<section class="getting-started">
+					<h2 class="title">Getting started</h2>
+				</section>
 
-	<div class="box box-3">
-		<div class="wrapper">
-			<div class="item-1"></div>
-			<div class="item-2"></div>
-			<div class="item-3"></div>
-			<div class="item-4"></div>
+				<section class="features">
+					<h2 class="title">Features</h2>
+				</section>
+			</div>
 		</div>
-	</div>
+		<footer>
+			<div class="wrapper">
 
-	<div class="slide">
-		<ul>
-			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-1.jpg" width="640" height="480" alt=""></li>
-			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-2.jpg" width="640" height="480" alt=""></li>
-			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-3.jpg" width="640" height="480" alt=""></li>
-			<li><img src="http://lorempixel.com/image_output/city-q-g-640-480-4.jpg" width="640" height="480" alt=""></li>
-		</ul>
+			</div>
+		</footer>
 	</div>
 
 	<script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<!-- <script data-main="js-min/main-min.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script> -->
-	<script type="text/javascript" src="js/utils.js"></script>
-	<script type="text/javascript" src="js/slider/slider.js"></script>
-	<script type="text/javascript">
+	<script type="text/javascript" src="dist/slider.js"></script>
+	<script>
 		(function(){
-
-			$(".box").each(function(e){
-				var options = {
-					alignment: "start",
-					teste: "teste"
-				};
-				if($(this).hasClass("box-2")) {
-					options.orientation = "vertical";
-				}
-				window["slider" + e] = new Slider(this, options);
-			})
-
-			var slide = document.querySelector(".slide");
-			window.slide = new Slider(slide);
+			window.slider = new Slider('.main-banner');
 		}())
 	</script>
-</body>
 
+</body>
 </html>
