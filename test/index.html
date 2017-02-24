@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+
+	<div class="main-banner">
+		<ul>
+			<li class="banner-01">banner 1</li>
+			<li class="banner-02">banner 1</li>
+			<li class="banner-03">banner 1</li>
+			<li class="banner-04">banner 1</li>
+		</ul>
+	</div>
+
+	<script src="/dist/slider.js"></script>
+	<script>
+		(function() {
+			var slider = new Slider('.main-banner', {
+				initialSlide: 3
+			});
+			console.log(slider)
+		}())
+	</script>
+</body>
+
+</html>
