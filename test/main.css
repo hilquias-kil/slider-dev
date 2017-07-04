@@ -28,3 +28,15 @@ body {
 
 	flex-shrink: 0;
 }
+
+.main-banner ul .banner-02 {
+	background-color: red;
+}
+
+.main-banner ul .banner-03 {
+	background-color: blue;
+}
+
+.main-banner ul .banner-04 {
+	background-color: green;
+}
