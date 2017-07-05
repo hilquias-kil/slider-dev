@@ -24,6 +24,21 @@ function cssTransform(el, x, y) {
 	el.style[transformProperty] = translate;
 }
 
+function clientAxis(event) {
+	return {
+		x: event.clientX || event.touches[0].pageX,
+		y: event.clientY || event.touches[0].pageY
+	};
+}
+
+var is_touch_device = 'ontouchstart' in window;
+var events = {
+	start: is_touch_device ? 'touchstart' : 'mousedown',
+	move: is_touch_device ? 'touchmove' : 'mousemove',
+	end: is_touch_device ? 'touchend' : 'mouseup',
+	resize: 'resize'
+};
+
 function validateElement(el) {
 	if (typeof el === "string") {
 		return document.querySelector(el);
@@ -129,6 +144,35 @@ var Slider = function () {
 			var x = this.options.orientation ? this.position : 0;
 			var y = this.options.orientation ? 0 : this.position;
 			cssTransform(this.holder, x, y);
+		}
+
+		//Drag
+
+	}, {
+		key: "bind",
+		value: function bind() {
+			this.el.addEventListener(events.start, this.start.bind(this));
+			this.el.addEventListener(events.move, this.move.bind(this));
+			this.el.addEventListener(events.end, this.end.bind(this));
+		}
+	}, {
+		key: "start",
+		value: function start(event) {
+			this.dragging = true;
+			this.delta = clientAxis(event).x - this.position;
+		}
+	}, {
+		key: "move",
+		value: function move(event) {
+			if (this.dragging) {
+				this.position = clientAxis(event).x - this.delta;
+				cssTransform(this.holder, this.position, 0);
+			}
+		}
+	}, {
+		key: "end",
+		value: function end() {
+			this.dragging = false;
 		}
 	}]);
 	return Slider;

@@ -68,6 +68,30 @@ class Slider {
 		var y = this.options.orientation ? 0 : this.position;
 		_cssTransform(this.holder, x, y)
 	}
+
+	//Drag
+
+	bind(){
+		this.el.addEventListener(_events.start, this.start.bind(this))
+		this.el.addEventListener(_events.move, this.move.bind(this))
+		this.el.addEventListener(_events.end, this.end.bind(this))
+	}
+
+	start(event){
+		this.dragging = true;
+		this.delta = _clientAxis(event).x - this.position;
+	}
+
+	move(event){
+		if(this.dragging){
+			this.position = _clientAxis(event).x - this.delta;
+			_cssTransform(this.holder, this.position, 0)
+		}
+	}
+
+	end(){
+		this.dragging = false;
+	}
 }
 
 class Item {
