@@ -9,7 +9,16 @@
 
 <body>
 
-	<div class="main-banner">
+	<div class="main-banner" data-slider1>
+		<ul>
+			<li class="banner-01">banner 1</li>
+			<li class="banner-02">banner 2</li>
+			<li class="banner-03">banner 3</li>
+			<li class="banner-04">banner 4</li>
+		</ul>
+	</div>
+
+	<div class="main-banner vertical" data-slider2>
 		<ul>
 			<li class="banner-01">banner 1</li>
 			<li class="banner-02">banner 2</li>
@@ -21,8 +30,12 @@
 	<script src="/dist/slider.js"></script>
 	<script>
 		(function() {
-			window.slider = new Slider('.main-banner');
-			console.log(slider)
+			window.slider1 = new Slider('[data-slider1]');
+			window.slider2 = new Slider('[data-slider2]', {
+				orientation: false
+			});
+			console.log(slider1)
+			console.log(slider2)
 		}())
 	</script>
 </body>

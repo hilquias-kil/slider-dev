@@ -7,17 +7,20 @@ body {
 	width: 100%;
 	position: relative;
 	overflow: hidden;
+	margin-bottom: 100px;
+	outline: 1px solid red;
 }
 
 .main-banner ul {
 	margin: 0;
 	padding: 0;
 	display: flex;
+	will-change: transform;
 }
 
 .main-banner ul li {
 	width: 80%;
-	height: 50vh;
+	height: 30vh;
   background-color: #ccc;
   box-shadow: 0 0 0 1px #000 inset;
 
@@ -39,4 +42,12 @@ body {
 
 .main-banner ul .banner-04 {
 	background-color: green;
+}
+
+.main-banner.vertical {
+	height: 40vh;
+}
+
+.main-banner.vertical ul {
+	flex-direction: column;
 }

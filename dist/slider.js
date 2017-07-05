@@ -57,24 +57,29 @@ var createClass = function () {
   };
 }();
 
-var defaultOptions = {
-	initialSlide: 0,
-	orientation: true
+var _map = Array.prototype.map;
+var DefaultOptions = function DefaultOptions() {
+	classCallCheck(this, DefaultOptions);
+
+	this.initialSlide = 0;
+	this.orientation = true;
 };
 
-var _map = Array.prototype.map;
 var Slider = function () {
 	function Slider(element, config) {
 		classCallCheck(this, Slider);
 
 		this.el = validateElement(element);
 		this.holder = this.el.children[0];
-		this.options = Object.assign(defaultOptions, config);
+		this.options = Object.assign(new DefaultOptions(), config);
 		this.running = false;
 		this.current = this.options.initialSlide;
 		this.measure = this.options.orientation ? "offsetWidth" : "offsetHeight";
+		this.dragging = false;
+
 		this.mutableProperties();
 		this.go();
+		//this.bind()
 	}
 
 	createClass(Slider, [{
@@ -120,8 +125,10 @@ var Slider = function () {
 	}, {
 		key: "go",
 		value: function go() {
-			var position = this.slides[this.current]['center'];
-			cssTransform(this.holder, position, 0);
+			this.position = this.slides[this.current]['center'];
+			var x = this.options.orientation ? this.position : 0;
+			var y = this.options.orientation ? 0 : this.position;
+			cssTransform(this.holder, x, y);
 		}
 	}]);
 	return Slider;
@@ -130,13 +137,14 @@ var Slider = function () {
 var Item = function Item(element, sl, sum) {
 	classCallCheck(this, Item);
 
+	var view = sl.options.orientation ? sl.viewWidth : sl.viewHeight;
 	this.el = element;
 	this.size = this.el[sl.measure];
 	this.sum = sum;
 	this.start = -(this.sum - this.size);
-	this.center = this.sum - sl.viewWidth + (sl.viewWidth - this.size) / 2;
+	this.center = this.sum - view + (view - this.size) / 2;
 	this.center = -this.center;
-	this.end = -(this.sum - sl.viewWidth);
+	this.end = -(this.sum - view);
 };
 
 return Slider;
