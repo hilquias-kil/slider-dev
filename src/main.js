@@ -25,11 +25,11 @@ class Slider {
 
 		this.mutableProperties()
 		this.go()
-		//this.bind()
+		this.bind()
 	}
 
 	mutableProperties() {
-		var initial = 0;
+		let initial = 0;
 
 		this.viewWidth = this.el.offsetWidth;
 		this.viewHeight = this.el.offsetHeight;
@@ -64,9 +64,7 @@ class Slider {
 
 	go(){
 		this.position = this.slides[this.current]['center'];
-		var x = this.options.orientation ? this.position : 0;
-		var y = this.options.orientation ? 0 : this.position;
-		_cssTransform(this.holder, x, y)
+		transform(this.holder, this.position, this)
 	}
 
 	//Drag
@@ -79,19 +77,33 @@ class Slider {
 
 	start(event){
 		this.dragging = true;
-		this.delta = _clientAxis(event).x - this.position;
+		this.delta = clientAxis(event, this) - this.position;
 	}
 
 	move(event){
 		if(this.dragging){
-			this.position = _clientAxis(event).x - this.delta;
-			_cssTransform(this.holder, this.position, 0)
+			this.position = clientAxis(event, this) - this.delta;
+			transform(this.holder, this.position, this)
 		}
 	}
 
 	end(){
 		this.dragging = false;
 	}
+}
+
+const transform = (el, position, context) => {
+	let x = context.options.orientation ? position : 0;
+	let y = context.options.orientation ? 0 : position;
+	console.log(x,y)
+	_cssTransform(el, x, y)
+}
+
+const clientAxis = (event, context) => {
+	if(context.options.orientation){
+		return _clientAxis(event).x;
+	}
+	return _clientAxis(event).y;
 }
 
 class Item {

@@ -24,7 +24,7 @@ function cssTransform(el, x, y) {
 	el.style[transformProperty] = translate;
 }
 
-function clientAxis(event) {
+function clientAxis$1(event) {
 	return {
 		x: event.clientX || event.touches[0].pageX,
 		y: event.clientY || event.touches[0].pageY
@@ -94,7 +94,7 @@ var Slider = function () {
 
 		this.mutableProperties();
 		this.go();
-		//this.bind()
+		this.bind();
 	}
 
 	createClass(Slider, [{
@@ -141,9 +141,7 @@ var Slider = function () {
 		key: "go",
 		value: function go() {
 			this.position = this.slides[this.current]['center'];
-			var x = this.options.orientation ? this.position : 0;
-			var y = this.options.orientation ? 0 : this.position;
-			cssTransform(this.holder, x, y);
+			transform(this.holder, this.position, this);
 		}
 
 		//Drag
@@ -159,14 +157,14 @@ var Slider = function () {
 		key: "start",
 		value: function start(event) {
 			this.dragging = true;
-			this.delta = clientAxis(event).x - this.position;
+			this.delta = clientAxis(event, this) - this.position;
 		}
 	}, {
 		key: "move",
 		value: function move(event) {
 			if (this.dragging) {
-				this.position = clientAxis(event).x - this.delta;
-				cssTransform(this.holder, this.position, 0);
+				this.position = clientAxis(event, this) - this.delta;
+				transform(this.holder, this.position, this);
 			}
 		}
 	}, {
@@ -177,6 +175,20 @@ var Slider = function () {
 	}]);
 	return Slider;
 }();
+
+var transform = function transform(el, position, context) {
+	var x = context.options.orientation ? position : 0;
+	var y = context.options.orientation ? 0 : position;
+	console.log(x, y);
+	cssTransform(el, x, y);
+};
+
+var clientAxis = function clientAxis(event, context) {
+	if (context.options.orientation) {
+		return clientAxis$1(event).x;
+	}
+	return clientAxis$1(event).y;
+};
 
 var Item = function Item(element, sl, sum) {
 	classCallCheck(this, Item);
