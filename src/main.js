@@ -95,7 +95,6 @@ class Slider {
 const transform = (el, position, context) => {
 	let x = context.options.orientation ? position : 0;
 	let y = context.options.orientation ? 0 : position;
-	console.log(x,y)
 	_cssTransform(el, x, y)
 }
 

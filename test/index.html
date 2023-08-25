@@ -27,15 +27,10 @@
 		</ul>
 	</div>
 
-	<script src="/dist/slider.js"></script>
+	<script src="/dist/bundle.js"></script>
 	<script>
 		(function() {
-			window.slider1 = new Slider('[data-slider1]');
-			window.slider2 = new Slider('[data-slider2]', {
-				orientation: false
-			});
-			console.log(slider1)
-			console.log(slider2)
+			const slider1 = Slider(document.querySelector("[data-slider1]"))
 		}())
 	</script>
 </body>

@@ -1,18 +1,30 @@
 {
-  "name": "slider",
+  "name": "slider-dev",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c -w"
+    "dev": "rollup -c --watch",
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilquias-kil/slider-dev.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hilquias-kil/slider-dev/issues"
+  },
+  "homepage": "https://github.com/hilquias-kil/slider-dev#readme",
   "devDependencies": {
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "rollup": "^0.41.4",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-watch": "^3.2.2"
+    "@rollup/plugin-typescript": "^11.1.2",
+    "rollup": "^3.28.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
   }
 }
